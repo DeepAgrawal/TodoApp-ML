@@ -12,8 +12,9 @@ function TodoList({ visRef }) {
 
   React.useEffect(() => {
     const storedTodos = JSON.parse(localStorage.getItem('todos'))
-    console.log(storedTodos)
-    setTodos(storedTodos)
+    if (storedTodos !== null) {
+      setTodos(storedTodos)
+    }
   }, [])
 
   React.useEffect(() => {
@@ -24,8 +25,12 @@ function TodoList({ visRef }) {
     if (todo.text.trim() === '') {
       return
     }
-    const newTodos = [...todos, todo]
-    setTodos(newTodos)
+    if (todos === null || todos.length === 0) {
+      setTodos(() => [todo])
+    } else {
+      const newTodos = [...todos, todo]
+      setTodos(() => newTodos)
+    }
   }
 
   const removeTodo = (id) => {
