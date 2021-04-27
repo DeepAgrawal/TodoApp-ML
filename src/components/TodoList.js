@@ -62,11 +62,13 @@ function TodoList({ visRef }) {
         <>
           <h1>What's the Plan for Today?</h1>
           <TodoForm onSubmit={addTodo} model={model} encoder={encoder} />
-          <Todo
-            todos={todos}
-            completeTodo={completeTodo}
-            removeTodo={removeTodo}
-          />
+          {todos !== null && (
+            <Todo
+              todos={todos}
+              completeTodo={completeTodo}
+              removeTodo={removeTodo}
+            />
+          )}
         </>
       )}
     </>
