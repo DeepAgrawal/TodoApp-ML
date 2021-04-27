@@ -5,8 +5,13 @@ import { RiTodoLine } from 'react-icons/ri'
 import { IoFitness } from 'react-icons/io5'
 import { MdLocalDrink } from 'react-icons/md'
 import { BiBookBookmark } from 'react-icons/bi'
+import { FaFirstAid } from 'react-icons/fa'
+import { FaBook } from 'react-icons/fa'
+import { MdCake } from 'react-icons/md'
+import { FaRunning } from 'react-icons/fa'
+import { AiTwotoneCar } from 'react-icons/ai'
 
-const CONFIDENCE_THRESHOLD = 0.7
+const CONFIDENCE_THRESHOLD = 0.4
 
 const TodoForm = ({ onSubmit, model, encoder }) => {
   const [input, setInput] = useState({
@@ -66,13 +71,11 @@ const TodoForm = ({ onSubmit, model, encoder }) => {
         {suggestedIcon === 'TODO' && <RiTodoLine className='todo-input-icon' />}
         {suggestedIcon === '' && <RiTodoLine className='todo-input-icon' />}
         {suggestedIcon === null && <RiTodoLine className='todo-input-icon' />}
-        {suggestedIcon === 'RUN' && <IoFitness className='todo-input-icon' />}
-        {suggestedIcon === 'DRINK' && (
-          <MdLocalDrink className='todo-input-icon' />
-        )}
-        {suggestedIcon === 'BOOK' && (
-          <BiBookBookmark className='todo-input-icon' />
-        )}
+        {suggestedIcon === 'AID' && <FaFirstAid className='todo-icon' />}
+        {suggestedIcon === 'BOOK' && <FaBook className='todo-icon' />}
+        {suggestedIcon === 'CAKE' && <MdCake className='todo-icon' />}
+        {suggestedIcon === 'SPORT' && <FaRunning className='todo-icon' />}
+        {suggestedIcon === 'TRAVEL' && <AiTwotoneCar className='todo-icon' />}
         Add Todo
       </button>
     </form>

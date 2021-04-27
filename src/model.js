@@ -1,13 +1,19 @@
 import * as tf from '@tensorflow/tfjs'
 import * as tfvis from '@tensorflow/tfjs-vis'
-const learnTodos = require('./data/learn_todos.json')
-const exerciseTodos = require('./data/exercise_todos.json')
+const aidTodos = require('./data/aid_todos.json')
+const bookTodos = require('./data/book_todos.json')
+const cakeTodos = require('./data/cake_todos.json')
+const sportTodos = require('./data/sport_todos.json')
+const travelTodos = require('./data/travel_todos.json')
 
-const trainTasks = learnTodos.concat(exerciseTodos)
+const trainTasks = aidTodos
+  .concat(bookTodos)
+  .concat(cakeTodos)
+  .concat(sportTodos)
+  .concat(travelTodos)
 
-// const MODEL_NAME = 'suggestion-model'
-const MODEL_NAME = 'testing-model'
-const N_CLASSES = 2
+const MODEL_NAME = 'final-model'
+const N_CLASSES = 5
 
 const encodeData = async (encoder, tasks) => {
   const sentences = tasks.map((t) => t.text.toLowerCase())
@@ -27,40 +33,46 @@ const trainModel = async (encoder, container) => {
   const xTrain = await encodeData(encoder, trainTasks) // text embeddings
 
   const yTrain = tf.tensor2d(
-    trainTasks.map((t) => [t.icon === 'BOOK' ? 1 : 0, t.icon === 'RUN' ? 1 : 0])
+    trainTasks.map((t) => [
+      t.icon === 'AID' ? 1 : 0,
+      t.icon === 'BOOK' ? 1 : 0,
+      t.icon === 'CAKE' ? 1 : 0,
+      t.icon === 'SPORT' ? 1 : 0,
+      t.icon === 'TRAVEL' ? 1 : 0
+    ])
   )
 
   const model = tf.sequential()
 
-  // hidden layers
-  model.add(
-    tf.layers.dense({
-      inputShape: [xTrain.shape[1]],
-      activation: 'sigmoid',
-      units: 32
-    })
-  )
+  // // hidden layers
+  // model.add(
+  //   tf.layers.dense({
+  //     inputShape: [xTrain.shape[1]],
+  //     activation: 'sigmoid',
+  //     units: 50
+  //   })
+  // )
 
-  model.add(
-    tf.layers.dense({
-      inputShape: [32],
-      activation: 'sigmoid',
-      units: 8
-    })
-  )
+  // model.add(
+  //   tf.layers.dense({
+  //     inputShape: [50],
+  //     activation: 'sigmoid',
+  //     units: 15
+  //   })
+  // )
 
-  model.add(
-    tf.layers.dense({
-      inputShape: [8],
-      activation: 'sigmoid',
-      units: 4
-    })
-  )
+  // model.add(
+  //   tf.layers.dense({
+  //     inputShape: [15],
+  //     activation: 'sigmoid',
+  //     units: 8
+  //   })
+  // )
 
   // output layer
   model.add(
     tf.layers.dense({
-      inputShape: [4],
+      inputShape: [512],
       activation: 'softmax',
       units: N_CLASSES
     })
@@ -73,7 +85,6 @@ const trainModel = async (encoder, container) => {
   })
 
   await model.fit(xTrain, yTrain, {
-    batchSize: 32,
     validationSplit: 0.1,
     shuffle: true,
     epochs: 150,
@@ -100,9 +111,15 @@ const suggestIcon = async (model, encoder, taskName, threshold) => {
   console.log(prediction)
 
   if (prediction[0] > threshold) {
-    return 'BOOK'
+    return 'AID'
   } else if (prediction[1] > threshold) {
-    return 'RUN'
+    return 'BOOK'
+  } else if (prediction[2] > threshold) {
+    return 'CAKE'
+  } else if (prediction[3] > threshold) {
+    return 'SPORT'
+  } else if (prediction[4] > threshold) {
+    return 'TRAVEL'
   } else {
     return 'TODO'
   }
