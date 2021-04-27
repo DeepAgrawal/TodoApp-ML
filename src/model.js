@@ -5,7 +5,8 @@ const exerciseTodos = require('./data/exercise_todos.json')
 
 const trainTasks = learnTodos.concat(exerciseTodos)
 
-const MODEL_NAME = 'suggestion-model'
+// const MODEL_NAME = 'suggestion-model'
+const MODEL_NAME = 'testing-model'
 const N_CLASSES = 2
 
 const encodeData = async (encoder, tasks) => {
@@ -31,19 +32,35 @@ const trainModel = async (encoder, container) => {
 
   const model = tf.sequential()
 
-  // hidden layer
-  // model.add(
-  //   tf.layers.dense({
-  //     inputShape: [xTrain.shape[1]],
-  //     activation: 'sigmoid',
-  //     units: 2
-  //   })
-  // )
+  // hidden layers
+  model.add(
+    tf.layers.dense({
+      inputShape: [xTrain.shape[1]],
+      activation: 'sigmoid',
+      units: 32
+    })
+  )
+
+  model.add(
+    tf.layers.dense({
+      inputShape: [32],
+      activation: 'sigmoid',
+      units: 8
+    })
+  )
+
+  model.add(
+    tf.layers.dense({
+      inputShape: [8],
+      activation: 'sigmoid',
+      units: 4
+    })
+  )
 
   // output layer
   model.add(
     tf.layers.dense({
-      inputShape: [xTrain.shape[1]],
+      inputShape: [4],
       activation: 'softmax',
       units: N_CLASSES
     })
