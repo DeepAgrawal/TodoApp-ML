@@ -6,7 +6,7 @@ import { IoFitness } from 'react-icons/io5'
 import { MdLocalDrink } from 'react-icons/md'
 import { BiBookBookmark } from 'react-icons/bi'
 
-const CONFIDENCE_THRESHOLD = 0.6
+const CONFIDENCE_THRESHOLD = 0.7
 
 const TodoForm = ({ onSubmit, model, encoder }) => {
   const [input, setInput] = useState({

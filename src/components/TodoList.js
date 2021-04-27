@@ -10,6 +10,16 @@ function TodoList({ visRef }) {
   const [model, setModel] = useState(null)
   const [encoder, setEncoder] = useState(null)
 
+  React.useEffect(() => {
+    const storedTodos = JSON.parse(localStorage.getItem('todos'))
+    console.log(storedTodos)
+    setTodos(storedTodos)
+  }, [])
+
+  React.useEffect(() => {
+    localStorage.setItem('todos', JSON.stringify(todos))
+  }, [todos])
+
   const addTodo = (todo) => {
     if (todo.text.trim() === '') {
       return
