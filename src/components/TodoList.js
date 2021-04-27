@@ -24,9 +24,8 @@ function TodoList({ visRef }) {
     if (todo.text.trim() === '') {
       return
     }
-    const newTodos = [todo, ...todos]
+    const newTodos = [...todos, todo]
     setTodos(newTodos)
-    console.log(...todos)
   }
 
   const removeTodo = (id) => {

@@ -24,7 +24,7 @@ const TodoForm = ({ onSubmit, model, encoder }) => {
 
   const handleChange = (e) => {
     const taskName = e.target.value
-    setInput({ ...input, name: taskName })
+    setInput(() => ({ ...input, name: taskName }))
     if (typeTimeout) {
       clearTimeout(typeTimeout)
     }
@@ -36,7 +36,7 @@ const TodoForm = ({ onSubmit, model, encoder }) => {
           taskName,
           CONFIDENCE_THRESHOLD
         )
-        setSuggestedIcon(predictedIcon)
+        setSuggestedIcon(() => predictedIcon)
       }, 500)
     )
   }
@@ -48,7 +48,7 @@ const TodoForm = ({ onSubmit, model, encoder }) => {
       text: input.name,
       icon: suggestedIcon
     })
-    setInput({ name: '', icon: 'TODO' })
+    setInput(() => ({ name: '', icon: 'TODO' }))
     setSuggestedIcon(() => 'TODO')
   }
 
