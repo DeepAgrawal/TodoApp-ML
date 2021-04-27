@@ -5,7 +5,7 @@ import Todo from './Todo'
 import * as use from '@tensorflow-models/universal-sentence-encoder'
 import { trainModel } from '../model'
 
-function TodoList() {
+function TodoList({ visRef }) {
   const [todos, setTodos] = useState([])
   const [model, setModel] = useState(null)
   const [encoder, setEncoder] = useState(null)
@@ -38,7 +38,7 @@ function TodoList() {
   React.useEffect(() => {
     const loadModel = async () => {
       const sentenceEncoder = await use.load()
-      const trainedModel = await trainModel(sentenceEncoder)
+      const trainedModel = await trainModel(sentenceEncoder, visRef.current)
       setEncoder(sentenceEncoder)
       setModel(trainedModel)
     }

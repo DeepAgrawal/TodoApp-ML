@@ -6,7 +6,7 @@ import { IoFitness } from 'react-icons/io5'
 import { MdLocalDrink } from 'react-icons/md'
 import { BiBookBookmark } from 'react-icons/bi'
 
-const CONFIDENCE_THRESHOLD = 0.65
+const CONFIDENCE_THRESHOLD = 0.6
 
 const TodoForm = ({ onSubmit, model, encoder }) => {
   const [input, setInput] = useState({
@@ -14,6 +14,7 @@ const TodoForm = ({ onSubmit, model, encoder }) => {
     icon: 'TODO'
   })
   const [suggestedIcon, setSuggestedIcon] = useState('TODO')
+  const [typeTimeout, setTypeTimeout] = useState(null)
 
   const inputRef = useRef(null)
 
@@ -24,15 +25,20 @@ const TodoForm = ({ onSubmit, model, encoder }) => {
   const handleChange = (e) => {
     const taskName = e.target.value
     setInput({ ...input, name: taskName })
-    setTimeout(async () => {
-      const predictedIcon = await suggestIcon(
-        model,
-        encoder,
-        taskName,
-        CONFIDENCE_THRESHOLD
-      )
-      setSuggestedIcon(predictedIcon)
-    }, 400)
+    if (typeTimeout) {
+      clearTimeout(typeTimeout)
+    }
+    setTypeTimeout(
+      setTimeout(async () => {
+        const predictedIcon = await suggestIcon(
+          model,
+          encoder,
+          taskName,
+          CONFIDENCE_THRESHOLD
+        )
+        setSuggestedIcon(predictedIcon)
+      }, 500)
+    )
   }
 
   const handleSubmit = (e) => {
@@ -59,6 +65,7 @@ const TodoForm = ({ onSubmit, model, encoder }) => {
       <button onClick={handleSubmit} className='todo-button'>
         {suggestedIcon === 'TODO' && <RiTodoLine className='todo-input-icon' />}
         {suggestedIcon === '' && <RiTodoLine className='todo-input-icon' />}
+        {suggestedIcon === null && <RiTodoLine className='todo-input-icon' />}
         {suggestedIcon === 'RUN' && <IoFitness className='todo-input-icon' />}
         {suggestedIcon === 'DRINK' && (
           <MdLocalDrink className='todo-input-icon' />

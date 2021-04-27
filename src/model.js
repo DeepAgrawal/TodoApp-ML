@@ -1,4 +1,5 @@
 import * as tf from '@tensorflow/tfjs'
+import * as tfvis from '@tensorflow/tfjs-vis'
 const learnTodos = require('./data/learn_todos.json')
 const exerciseTodos = require('./data/exercise_todos.json')
 
@@ -13,7 +14,7 @@ const encodeData = async (encoder, tasks) => {
   return embeddings
 }
 
-const trainModel = async (encoder) => {
+const trainModel = async (encoder, container) => {
   try {
     const loadedModel = await tf.loadLayersModel(`localstorage://${MODEL_NAME}`)
     console.log('Using existing model')
@@ -22,7 +23,7 @@ const trainModel = async (encoder) => {
     console.log('Training new model')
   }
 
-  const xTrain = await encodeData(encoder, trainTasks)
+  const xTrain = await encodeData(encoder, trainTasks) // text embeddings
 
   const yTrain = tf.tensor2d(
     trainTasks.map((t) => [t.icon === 'BOOK' ? 1 : 0, t.icon === 'RUN' ? 1 : 0])
@@ -30,6 +31,16 @@ const trainModel = async (encoder) => {
 
   const model = tf.sequential()
 
+  // hidden layer
+  // model.add(
+  //   tf.layers.dense({
+  //     inputShape: [xTrain.shape[1]],
+  //     activation: 'sigmoid',
+  //     units: 2
+  //   })
+  // )
+
+  // output layer
   model.add(
     tf.layers.dense({
       inputShape: [xTrain.shape[1]],
@@ -48,7 +59,14 @@ const trainModel = async (encoder) => {
     batchSize: 32,
     validationSplit: 0.1,
     shuffle: true,
-    epochs: 150
+    epochs: 150,
+    callbacks: tfvis.show.fitCallbacks(
+      container,
+      ['loss', 'val_loss', 'acc', 'val_acc'],
+      {
+        callbacks: ['onEpochEnd']
+      }
+    )
   })
 
   await model.save(`localstorage://${MODEL_NAME}`)
@@ -60,7 +78,9 @@ const suggestIcon = async (model, encoder, taskName, threshold) => {
     return null
   }
   const xPredict = await encodeData(encoder, [{ text: taskName }])
-  const prediction = await model.predict(xPredict).data()
+  const prediction = model.predict(xPredict).dataSync()
+
+  console.log(prediction)
 
   if (prediction[0] > threshold) {
     return 'BOOK'

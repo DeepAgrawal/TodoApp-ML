@@ -1,13 +1,18 @@
-import React from 'react';
-import './App.css';
-import TodoList from './components/TodoList';
+import React from 'react'
+import './App.css'
+import TodoList from './components/TodoList'
 
 function App() {
+  const visRef = React.useRef(null)
+
   return (
-    <div className='todo-app'>
-      <TodoList />
-    </div>
-  );
+    <>
+      <div ref={visRef} className='vis'></div>
+      <div className='todo-app'>
+        <TodoList visRef={visRef} />
+      </div>
+    </>
+  )
 }
 
-export default App;
+export default App
