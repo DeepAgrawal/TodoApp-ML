@@ -74,7 +74,7 @@ const trainModel = async (encoder, container) => {
     tf.layers.dense({
       inputShape: [512],
       activation: 'softmax',
-      units: N_CLASSES
+      units: 5
     })
   )
 

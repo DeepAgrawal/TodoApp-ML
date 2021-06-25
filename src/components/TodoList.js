@@ -57,7 +57,7 @@ function TodoList({ visRef }) {
       setModel(trainedModel)
     }
     loadModel()
-  }, [])
+  }, [visRef])
 
   return (
     <>
